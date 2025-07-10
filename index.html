@@ -2,18 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Price Incrementer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 40px;
+      padding: 40px 20px;
       text-align: center;
       background: #f9f9f9;
+      max-width: 600px;
+      margin: auto;
     }
 
     h1 {
       margin-bottom: 10px;
       color: #333;
+      font-size: 2em;
     }
 
     .price {
@@ -21,28 +25,39 @@
       font-weight: bold;
       margin: 20px 0;
       color: #007bff;
+      word-wrap: break-word;
     }
 
     input[type="number"] {
       padding: 10px;
-      width: 200px;
-      font-size: 1em;
-      margin-bottom: 20px;
+      width: 80%;
+      max-width: 300px;
+      font-size: 1.1em;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
 
     .buttons {
       margin: 20px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
     }
 
     button {
-      margin: 5px;
-      padding: 10px 20px;
+      flex: 1 1 120px;
+      min-width: 120px;
+      padding: 12px 10px;
       font-size: 1em;
       border: none;
       background: #007bff;
       color: #fff;
       border-radius: 5px;
       cursor: pointer;
+      transition: background 0.3s ease;
+      white-space: nowrap;
     }
 
     button:hover {
@@ -51,10 +66,67 @@
 
     .cancel-button {
       background: #dc3545;
+      width: 100%;
+      max-width: 300px;
+      margin: 10px auto 0;
+      padding: 14px 0;
     }
 
     .cancel-button:hover {
       background: #a71d2a;
+    }
+
+    .history {
+      margin-top: 30px;
+      text-align: left;
+      display: inline-block;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .history h2 {
+      margin-bottom: 10px;
+      color: #555;
+      font-size: 1.2em;
+    }
+
+    .history ul {
+      list-style: none;
+      padding: 0;
+      max-height: 250px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fff;
+    }
+
+    .history li {
+      padding: 8px 12px;
+      border-bottom: 1px solid #eee;
+      font-size: 1em;
+    }
+
+    .history li:last-child {
+      border-bottom: none;
+    }
+
+    @media (max-width: 400px) {
+      .price {
+        font-size: 2.2em;
+      }
+
+      button {
+        min-width: 100%;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        max-width: none;
+      }
+
+      .history {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
@@ -76,8 +148,11 @@
     <button onclick="increment(25000)">+25000</button>
   </div>
 
-  <div>
-    <button class="cancel-button" onclick="cancelLast()">Cancel Previous Increment</button>
+  <button class="cancel-button" onclick="cancelLast()">Cancel Previous Increment</button>
+
+  <div class="history">
+    <h2>Price History</h2>
+    <ul id="historyList"></ul>
   </div>
 
   <script>
@@ -91,28 +166,39 @@
         return;
       }
       price = startAmount;
-      history = [];
+      history = [price];
       updateDisplay();
     }
 
     function increment(amount) {
-      history.push(amount);
       price += amount;
+      history.push(price);
       updateDisplay();
     }
 
     function cancelLast() {
-      if (history.length === 0) {
+      if (history.length <= 1) {
         alert("No increments to cancel.");
         return;
       }
-      const lastAmount = history.pop();
-      price -= lastAmount;
+      history.pop();
+      price = history[history.length - 1];
       updateDisplay();
     }
 
     function updateDisplay() {
       document.getElementById('price').textContent = price.toLocaleString();
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+      history.slice().reverse().forEach(p => {
+        const li = document.createElement('li');
+        li.textContent = `$${p.toLocaleString()}`;
+        historyList.appendChild(li);
+      });
     }
   </script>
 </body>
