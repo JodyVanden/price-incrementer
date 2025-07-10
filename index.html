@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Price Incrementer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      text-align: center;
+    }
+    .price {
+      font-size: 2em;
+      margin-bottom: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Price Incrementer</h1>
+  <div class="price">Current Price: $<span id="price">0</span></div>
+  
+  <div>
+    <button onclick="increment(1000)">+1000</button>
+    <button onclick="increment(5000)">+5000</button>
+    <button onclick="increment(10000)">+10000</button>
+    <button onclick="increment(20000)">+20000</button>
+    <button onclick="increment(25000)">+25000</button>
+  </div>
+  
+  <div>
+    <button onclick="cancelLast()">Cancel Previous Increment</button>
+  </div>
+
+  <script>
+    let price = 0;
+    let history = [];
+
+    function increment(amount) {
+      history.push(amount);
+      price += amount;
+      updateDisplay();
+    }
+
+    function cancelLast() {
+      if (history.length === 0) {
+        alert("No increments to cancel.");
+        return;
+      }
+      let lastAmount = history.pop();
+      price -= lastAmount;
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      document.getElementById('price').textContent = price;
+    }
+  </script>
+</body>
+</html>
